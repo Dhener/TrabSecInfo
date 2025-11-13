@@ -1,0 +1,23 @@
+{
+  "tcp": {
+    "count": 10,
+    "avg_time": 0.0001288175582885742,
+    "min_time": 3.314018249511719e-05,
+    "max_time": 0.00021886825561523438,
+    "stdev_time": 7.211469497920462e-05,
+    "avg_throughput": 520841922.00334144,
+    "avg_overhead": 0
+  },
+  "tls": {
+    "count": 10,
+    "avg_time": 0.00028591156005859376,
+    "min_time": 0.0001590251922607422,
+    "max_time": 0.00035572052001953125,
+    "stdev_time": 5.390378747347675e-05,
+    "avg_throughput": 161275147.64810494,
+    "avg_overhead": 28
+  },
+  "time_overhead_percent": 121.95076809180088,
+  "throughput_reduction_percent": 69.03568226079346,
+  "tls_slowdown_factor": 2.2195076809180088
+}

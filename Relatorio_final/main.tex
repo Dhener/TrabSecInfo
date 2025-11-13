@@ -1,0 +1,40 @@
+\documentclass[12pt, a4paper]{article}
+
+% Pacotes Essenciais
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx} % Para incluir imagens
+\usepackage{float}    % Para controle de figuras (H - here)
+\usepackage{url}      % Para links/URLs
+\usepackage[left=3cm, right=2cm, top=3cm, bottom=2cm]{geometry} % Margens
+
+\title{Trabalho Prático: Implementação e Análise - TCP vs TLS}
+\author{Dhener Rosemiro Silva / 121043412}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty} % Remove número da página da capa
+\newpage
+\tableofcontents
+\newpage
+
+% Inclusão das Partes do Relatório
+\input{01_introducao.tex}
+\input{02_funcionamento_tls.tex}
+\input{03_comparacao_seguranca.tex}
+\input{04_analise_e_overhead.tex}
+
+\section*{Conclusão}
+Este trabalho demonstrou a diferença crítica entre o transporte de dados em texto plano (TCP) e o transporte seguro (TLS). Apesar do \textit{overhead} de desempenho, o custo é justificado pela garantia de confidencialidade, integridade e autenticidade, essenciais para a segurança moderna em redes de computadores.
+
+% Para incluir o código-fonte (opcional, requer o pacote listings)
+% \section{Anexo: Código-Fonte}
+% \lstinputlisting[language=Python, caption=Código Cliente (client.py)]{client.py}
+% \lstinputlisting[language=Python, caption=Código Servidor (server.py)]{server.py}
+
+\end{document}

@@ -1,0 +1,43 @@
+======================================================================
+RELATÓRIO DE ANÁLISE DE DESEMPENHO: TCP vs TLS
+======================================================================
+
+PROTOCOLO TCP (sem criptografia)
+----------------------------------------------------------------------
+  Número de testes: 10
+  Tempo médio: 0.000129s
+  Tempo mínimo: 0.000033s
+  Tempo máximo: 0.000219s
+  Desvio padrão: 0.000072s
+  Throughput médio: 520841922.00 bytes/s
+
+PROTOCOLO TLS (com criptografia)
+----------------------------------------------------------------------
+  Número de testes: 10
+  Tempo médio: 0.000286s
+  Tempo mínimo: 0.000159s
+  Tempo máximo: 0.000356s
+  Desvio padrão: 0.000054s
+  Throughput médio: 161275147.65 bytes/s
+  Overhead médio: 28.00 bytes
+
+ANÁLISE COMPARATIVA
+----------------------------------------------------------------------
+  Overhead de tempo (TLS vs TCP): 121.95%
+  Redução de throughput: 69.04%
+  Fator de desaceleração: 2.22x
+
+INTERPRETAÇÃO DOS RESULTADOS
+----------------------------------------------------------------------
+  O TLS adiciona aproximadamente 122.0% de
+  overhead temporal devido ao:
+    - Handshake inicial (negociação de cifras)
+    - Criptografia/descriptografia dos dados
+    - Verificação de integridade (MAC)
+
+  Este overhead é o preço da segurança, garantindo:
+    - Confidencialidade (dados não podem ser lidos)
+    - Integridade (dados não podem ser modificados)
+    - Autenticidade (verificação da identidade do servidor)
+
+======================================================================

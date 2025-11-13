@@ -1,0 +1,16 @@
+\section{Introdução e Objetivos}
+
+Esse trabalho tem como objetivo principal desenvolver e analisar a implementação de um sistema de 
+transferência de arquivos utilizando dois protocolos distintos: o \textbf{TCP (Transmission Control Protocol)} 
+e o \textbf{TLS (Transport Layer Security)} sobre o TCP.
+
+Para isso, foi criado um programa cliente capaz de enviar um arquivo de texto para um servidor 
+em ambas as formas de transmissão. Esse envio deve ser realizado:
+
+\begin{itemize}
+    \item \textbf{Sem TLS:} Transmissão em texto plano (não criptografada).
+    \item \textbf{Com TLS:} Transmissão utilizando criptografia para garantir a segurança.
+\end{itemize}
+
+Após isso, as diferenças de segurança e desempenho introduzidas pelo uso do TLS serão analisadas e comparadas, 
+com base em evidências de captura de pacotes de rede e métricas de \textit{overhead} temporal.
