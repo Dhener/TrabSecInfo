@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1762805189 "/home/coder/project/Relatorio_final/main.tex" "main.pdf" "main" 1762805194 0
+["pdflatex"] 1763241520 "/home/coder/project/Relatorio_final/main.tex" "main.pdf" "main" 1763241525 0
   "/etc/texmf/web2c/texmf.cnf" 1759351663 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/coder/project/Relatorio_final/main.tex" 1762796376 1457 c864add73bd113f3613113f9dbbc3ad8 ""
+  "/home/coder/project/Relatorio_final/main.tex" 1763241352 1545 0b658a50d02fc5e50d68b901055b1cfc ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbi1200.tfm" 1136768653 3072 ccae1a240ab272417e4399fe942df546 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx1200.tfm" 1136768653 3584 402da0b29eafbad07963b1224b222f18 ""
@@ -81,7 +81,7 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1759351677 4623455 fa0568a71dd9a288d6c226ee477506c6 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759351712 7880996 71c156663903d88e56c94c127ed6dd7e ""
   "01_introducao.tex" 1762634514 886 8640f2f79387d9988d48a7008dc41949 ""
-  "02_funcionamento_tls.tex" 1762805188 10429 00dd65c47df2a0a549746bab20e1f003 ""
+  "02_funcionamento_tls.tex" 1763240917 15631 e0b2ad80c1b6f2e8b9e4d196606719ec ""
   "03_comparacao_seguranca.tex" 1762639023 3323 7b13ee8784570b69b8395e9a3481957e ""
   "04_analise_e_overhead.tex" 1762804835 4782 b3340442303180fccdaeb386db5a4a70 ""
   "imagens/Screenshot 2025-11-08 at 15.42.45.png" 1762627378 1001427 31b2f6b3d208535b4690f9639c0e2e7f ""
@@ -90,13 +90,14 @@
   "imagens/cipher_suite.png" 1762798309 734946 3c8b8f46645c1a4016f5b8fca7c9eec2 ""
   "imagens/client_hello_part1.png" 1762803130 929912 0a058b71a5f0b5a2153894f85b70848d ""
   "imagens/client_hello_parte2.png" 1762803488 827751 287ba166369eb34c1e78060356214391 ""
+  "imagens/client_key_exchange.png" 1763239259 592451 710ab1e089df2a4fc6524cea15f363b7 ""
   "imagens/conect_tls.png" 1762797453 243899 9beaa9c7b828ebe9ac6017cc292b2e27 ""
   "imagens/server_hello_certificate_tls.png" 1762636297 1154733 5f55917609b9cc6c131c6e1b3b6bca6d ""
   "imagens/texto_cifrado.png" 1762638648 636769 8fbe2412037f94d9c9918c13ad81a900 ""
-  "imagens/troca_de_chaves.png" 1762800559 1263745 d10cfedbb466ac4ec90fbcf286001e77 ""
-  "main.aux" 1762805194 4272 b6966ef981f06dc56221494ab240b4fb "pdflatex"
-  "main.tex" 1762796376 1457 c864add73bd113f3613113f9dbbc3ad8 ""
-  "main.toc" 1762805194 1371 939f4d841d4ff3d5227a95535ad8d43a "pdflatex"
+  "imagens/troca_de_chaves.png" 1763238156 1220741 2386b2d61573d7dff8a542c03453f17c ""
+  "main.aux" 1763241525 4432 105cc7e4ea9721c3e301166127babad3 "pdflatex"
+  "main.tex" 1763241352 1545 0b658a50d02fc5e50d68b901055b1cfc ""
+  "main.toc" 1763241525 1374 ad81d9d1880c882bcc75c30d2d2028b0 "pdflatex"
   (generated)
   "main.aux"
   "main.log"
