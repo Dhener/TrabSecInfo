@@ -1,0 +1,250 @@
+\section{Funcionamento do TLS (Transport Layer Security)}
+
+O TLS é um protocolo criptográfico que opera na camada de transporte, oferecendo segurança, integridade 
+e autenticidade sobre uma rede. Seu objetivo é aprimorar o TCP através da criptografia. Ele é o sucessor do SSL e estabelece uma comunicação segura em duas fases: 
+a negociação (\textit{Handshake}) e a transferência de dados cifrados.
+
+\subsection{O Processo de Handshake}
+
+O \textbf{Handshake TLS} é a etapa inicial onde cliente e servidor negociam e estabelecem os parâmetros 
+de segurança para a sessão. Usado antes que quaisquer dados da aplicação sejam transmitidos. Permite que 
+o Servidor e o Cliente se autentiquem mutuamente (especialmente o servidor ao cliente), negociem um
+algoritmo de \textbf{criptografia}, um algoritmo de \textbf{MAC} (integridade) e as \textbf{chaves criptográficas} 
+a serem usadas para proteger os dados. Esse protocolo é dividido em 4 fases:
+\begin{enumerate}
+    \item \textbf{Fase 1 (Client Hello + Server Hello):}
+    Nessa fase há o estabelecimento das capacidades de segurança, incluindo versão do protocolo, ID da sessão,
+    Cipher Suite, Método de compressão e números aleatórios iniciais.
+    
+    % #################################### Início do Client Hello ##################################
+    \subitem \textbf{Client Hello:}
+        O cliente inicia o \textit{handshake} enviando esta mensagem client\_hello para informar ao servidor 
+        suas capacidades de segurança e iniciar a negociação. Os parâmetros do client\_hello são:
+        \begin{itemize}
+            \item \textbf{Versão:} É a versão mais alta do TLS que o cliente entede. 
+            \item \textbf{Cifras Suportadas:} Envia a lista de algoritmos de cifras (\textit{Cipher Suites}) suportadas e em ordem decrescente de preferência. Cada item define o algoritmo de troca de chave e um CipherSpec (algoritmo de cifra/MAC). O servidor usará esta lista para escolher o conjunto criptográfico a ser usado na sessão.
+            \item \textbf{Client Random:} Uma estrutura aleatória gerada pelo cliente. Sua composição é 32-bit timestamp + 28 bytes aleatórios (de um gerador seguro). Usado para prevenir ataques de replay.
+            \item \textbf{ID de Sessão (\texttt{Session ID}):}
+                Este campo é usado para o mecanismo de Retomada de Sessão (\textit{Session Resumption}).
+                \begin{itemize}
+                    \item Um comprimento de **zero** (como visto no seu teste) indica que o cliente está iniciando um \textit{Handshake Completo}, que exige mais processamento.
+                    \item Um valor diferente de zero indicaria uma tentativa de retomar uma sessão anterior, o que otimiza o processo e reduz o \textit{overhead}.
+                \end{itemize}
+            \item \textbf{Extensões (\texttt{Extensions}):} São campos adicionais que expandem a funcionalidade do TLS. As mais relevantes são:
+                \begin{itemize}
+                    \item \texttt{server\_name} (SNI): Permite ao cliente informar qual nome de domínio ele está tentando acessar, útil para servidores que hospedam múltiplos sites (virtual hosting).
+                    \item \texttt{supported\_groups}: O cliente lista as curvas elípticas (\texttt{x25519}) ou grupos Diffie-Hellman que ele aceita. O servidor escolherá um para realizar o cálculo de Troca de Chaves (ECDHE).
+                \end{itemize}
+        \end{itemize}
+
+    % Imagem do Client Hello
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{./imagens/client_hello_part1.png}
+        \caption{Captura do Client Hello no Wireshark na Transmissão TLS - Parte 1.}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{./imagens/client_hello_parte2.png}
+        \caption{Captura do Client Hello no Wireshark na Transmissão - TLS Parte 2.}
+    \end{figure}
+    % #################################### Fim do Client Hello ##################################
+
+    % #################################### Início do Server Hello ##################################
+    \subitem \textbf{Server Hello:} O servidor responde com uma mensagem server\_hello. Os parâmetros do server\_hello são:
+
+        \begin{itemize}
+            \item Contém os mesmos parâmetros do client\_hello. 
+            \item Campo \textbf{\textit{Cipher Suite}:} Escolhe a cipher suite que será usada.
+            \item Campo \textbf{\textit{Random}:} Número aleatório do servidor
+            \item Campo \textbf{\textit{Session ID}:} Confirma que o servidor aceitou a versão proposta, que foi TLS 1.2 no caso.
+        \end{itemize}
+
+    % Imagem do Server Hello
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{./imagens/server_hello_certificate_tls.png}
+        \caption{Captura do Server Hello e Certificate no Wireshark na Transmissão TLS.}
+    \end{figure}
+    % #################################### Fim do Server Hello ##################################
+
+    % #################################### Início da Autenticação do Servidor ###################
+    \item \textbf{Fase 2 (Autenticação do Servidor):}
+        O servidor envia seu certificado e (possivelmente) informações de chave. Termina com Server Hello Done. O servidor envia após o server\_hello:
+
+        \begin{itemize}
+            \item Certificado (campo \textbf{\textit{Certificate}:}) No caso o certificado autoassinado 
+            server.crt que foi gerado, conforme o código server.py
+            \item Informação da chave \textbf{\textit{Server Key Exchange}:} (Opcional) Envia informações adicionais 
+            da chave como o método avançado \textbf{ECDHE} (\textit{Elliptic Curve Diffie-Hellman Ephemeral}),
+            garantindo o \textbf{Perfect Forward Secrecy (PFS)}. Este processo de troca de chaves cumpre 
+            três funções cruciais: 
+            \begin{enumerate}
+                \item \textbf{Derivação e Algoritmo}: O campo \texttt{EC Diffie-Hellman Server Params} 
+                confirma o uso do ECDHE, que permite que o cliente e o servidor \textbf{derivem} a 
+                \textit{Chave Pré-Mestra} de forma independente, sem trocá-la de forma criptografada.
+
+                \item \textbf{Curva e Chave Pública Efêmera:} O servidor especifica a curva elíptica moderna 
+                \texttt{x25519} (campo \texttt{Named Curve}) e envia sua \textbf{chave pública temporária} 
+                (\texttt{Pubkey}). Esta chave é usada apenas nesta sessão e será descartada, sendo a base 
+                do PFS.
+
+                \item \textbf{Autenticidade:} A chave pública efêmera e seus parâmetros são digitalmente 
+                \textbf{assinados} pelo servidor (campo \texttt{Signature}), utilizando a chave privada de 
+                longo prazo vinculada ao certificado. O cliente verifica essa assinatura, garantindo que 
+                a troca de chaves é autêntica e veio do servidor correto.
+            \end{enumerate}
+            \item Solicitação do certificado do cliente (CertificateRequest):
+            \begin{enumerate}
+                \item (Opcional) O servidor pode solicitar um certificado do cliente para autenticação mútua. 
+            \end{enumerate}
+            \item Fim da mensagem (Server Hello Done):
+            \begin{enumerate}
+                \item Sempre obrigatória
+                \item Indica o fim do "olá" do servidor e mensagens associadas
+                \item Após enviar, o servidor aguarda a resposta do cliente.
+            \end{enumerate}
+        \end{itemize}
+
+        % Imagem do Server Hello
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\textwidth]{./imagens/troca_de_chaves.png}
+            \caption{Captura do Server Hello para troca de chaves na Transmissão TLS.}
+        \end{figure}
+    
+    % #################################### Fim da Autenticação do Servidor ##################################
+
+    % #################################### Início da Resposta do cliente ###################
+
+    \item \textbf{Fase 3 (Resposta do cliente):}
+        O cliente envia seu certificado, caso solicitado, a troca de chave e pode enviar a 
+        verificação do certificado. Após receber o server\_done do servidor:
+
+        \begin{itemize}
+            \item Verificação (Ações do cliente):
+            \begin{enumerate}
+                \item O cliente deve verificar se o servidor forneceu um certificado válido (se foi exigido).
+                \item O cliente deve checar se os parâmetros do server hello (CipherSuite, etc.) são aceitáveis.
+            \end{enumerate}
+            \item Envio de Mensagens (Ações do cliente):
+            \begin{enumerate}
+                \item Se tudo estiver satisfatório, o cliente envia uma ou mais mensagens ao servidor.
+                \item (Ex: ClientKeyExchange - contendo o ”pre-master secret” criptografado com a chave pública do servidor).
+                \item (Ex: CertificateVerify - se o servidor solicitou um certificado do cliente e o cliente está respondendo).
+            \end{enumerate}
+        \end{itemize} 
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.9\textwidth]{./imagens/client_key_exchange.png}
+            \caption{Captura do Client Key Exchange na Transmissão TLS.}
+        \end{figure}
+    
+    % #################################### Fim da Resposta do cliente ##################################
+
+
+    \item \textbf{Fase 4 (Finalização - Ativacão):} Trocas do Cipher Suite entre servidor e cliente e finaliza o Protocolo Handshake.
+        \begin{itemize}
+            \item Ação do cliente:
+            \begin{enumerate}
+                \item Envia a mensagem change\_cipher\_spec. (Esta mensagem usa o Change Cipher Spec Protocol, não o Handshake Protocol).
+                \item Ação: Copia o CipherSpec pendente (negociado) para o CipherSpec atual (em uso).
+                \item Imediatamente, envia a mensagem finished.
+                \begin{itemize}
+                    \item A mensagem finished já é enviada usando os novos algoritmos, chaves e segredos.
+                    \item A finished verifica se a troca de chaves e a autenticação foram bem-sucedidas.
+                \end{itemize}
+            \end{enumerate}
+            \item Ação do servidor (em resposta):
+            \begin{enumerate}
+                \item Envia sua prória mensagem change\_cipher\_spec.
+                \item Transfere o CipherSpec pendente para o atual.
+                \item Envia sua própria mensagem finished (também já criptografada).
+            \end{enumerate}
+            \item Conclusão:
+            \begin{enumerate}
+                \item Neste ponto, o handshake está completo.
+                \item Cliente e servidor podem começar a trocar dados da camada de aplicação (HTTP) de forma segura.
+            \end{enumerate}
+        \end{itemize} 
+
+    \item \textbf{Change Cipher Spec:} Ambas as partes sinalizam que toda a comunicação subsequente 
+    será cifrada usando a chave de sessão recém-gerada. Essa mensagem, por si só, não contém dados de 
+    criptografia. Sua função é puramente sinalizadora. Ela é como um interruptor, dizendo à parte 
+    receptora: "A partir do próximo pacote que você receber, comece a usar as chaves secretas 
+    que acabamos de negociar."
+    \begin{itemize}
+        \item O cliente envia primeiro, sinalizando que ele está pronto para usar as chaves de 
+        sessão recém-derivadas para cifrar a próxima mensagem. Rótulo do Pacote (Client $\rightarrow$ Server):
+        TLSv1.2 Record Layer: Change Cipher Spec
+
+        % Imagem do Change Cipher Spec do cliente para o servidor
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.9\textwidth]{./imagens/change_cipher_spec_cliente_para_servidor.png}
+            \caption{Captura do Change Cipher Spec do cliente para o servidor na Transmissão TLS.}
+        \end{figure}
+        
+        \item O servidor envia sua própria mensagem Change Cipher Spec em resposta, confirmando que ele 
+        também está ativando as chaves de sessão simétricas. Rótulo do Pacote (Server $\rightarrow$ Client):
+        TLSv1.2 Record Layer: Change Cipher Spec Protocol: Change Cipher Spec
+
+        % Imagem do Change Cipher Spec do servidor para o cliente
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.9\textwidth]{./imagens/change_cipher_spec_servidor_cliente.png}
+            \caption{Captura do Change Cipher Spec do servidor para o cliente na Transmissão TLS.}
+        \end{figure}
+
+    \end{itemize}
+\end{enumerate}
+Este processo complexo garante a autenticidade do servidor e o sigilo na negociação da chave.
+
+\subsection{Criptografia de Dados e Transferência Segura}
+
+Uma vez que o \textit{handshake} é concluído e a \textbf{Chave de Sessão Simétrica} é estabelecida, 
+a comunicação de dados prossegue no protocolo de registro TLS (TLS Record Protocol). Esta fase é crucial 
+para garantir a \textbf{Confidencialidade} e a \textbf{Integridade} dos dados transferidos.
+
+\subsubsection{Ativação da Camada TLS no Código-Fonte}
+
+No lado do cliente, a criptografia é ativada envolvendo um \textit{socket} TCP base com uma camada SSL/TLS, 
+utilizando o módulo padrão \texttt{ssl} do Python.
+
+O trecho de código no \texttt{client.py} demonstra a criação do contexto e o envolvimento do \textit{socket}:
+
+% Imagem do connect_tls
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{./imagens/conect_tls.png}
+    \caption{Captura de parte do client.py do método connect\_tls.}
+\end{figure}
+
+Após o sucesso do \texttt{context.wrap\_socket}, qualquer chamada subsequente ao método \texttt{send()} 
+neste \textit{socket} automaticamente cifra os dados antes da transmissão.
+
+\subsubsection{Algoritmo e Evidência na Rede}
+
+A segurança na transferência ocorre pelos seguintes mecanismos, que podem ser verificados nas capturas 
+de pacotes:
+
+\begin{itemize}
+    \item \textbf{Criptografia Simétrica (Confidencialidade):} O algoritmo de cifragem simétrica é o responsável por codificar os dados.
+    \begin{itemize}
+        \item \textbf{Algoritmo Negociado:} O \textit{Server Hello} confirmou o uso do conjunto de cifras \textbf{\texttt{TLS\_ECDHE\_RSA\_WITH\_CHACHA20\_POLY1305\_SHA256}}. Isso estabelece que a criptografia de dados é realizada pelo algoritmo \textbf{ChaCha20} (cifra de fluxo moderna).
+        \item \textbf{Evidência:} Os pacotes de dados são identificados como \textbf{\texttt{Application Data}} e o seu \textit{payload} contém \textit{bytes} cifrados, confirmando que o ChaCha20 está ativo.
+    \end{itemize}
+    % Imagem do Cipher Suite
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{./imagens/cipher_suite.png}
+        \caption{Captura do Server Hello do campo cipher\_suite.}
+    \end{figure}
+    \item \textbf{Integridade (MAC/Tag de Autenticação):} Cada registro TLS é protegido contra adulteração.
+    \begin{itemize}
+        \item A cifra ChaCha20 é emparelhada com o **Poly1305** (do conjunto de cifras negociado), formando um algoritmo de \textit{cifra autenticada} (AEAD).
+        \item O Poly1305 gera um \textit{Authentication Tag} para cada bloco de dados. O receptor verifica essa \textit{tag}, garantindo a \textbf{Integridade} e a autenticidade dos dados do arquivo.
+    \end{itemize}
+\end{itemize}

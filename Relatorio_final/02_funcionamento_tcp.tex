@@ -1,0 +1,56 @@
+\section{Transmissão TCP Pura (Sem Criptografia)}
+
+A transmissão em texto plano (TCP Puro) serve como o \textbf{ponto de contraste} crucial para a análise de segurança e desempenho. Sua simplicidade resulta em alta velocidade, mas expõe totalmente o conteúdo da comunicação.
+
+\subsection{Estabelecimento e Ciclo de Vida da Conexão}
+
+A conexão TCP é estabelecida de forma minimalista, focando apenas na confiabilidade do canal de transporte.
+
+\subsubsection{Handshake de Três Vias e Overhead Temporal}
+
+O estabelecimento de uma conexão TCP é caracterizado pela sua eficiência através do \textbf{handshake de três vias} (SYN, SYN-ACK, ACK)(pacotes 39 a 41 da imagem).
+
+\begin{itemize}
+    \item \textbf{Baixa Latência Inicial:} Este processo é extremamente rápido, pois não envolve troca de certificados ou cálculos criptográficos.
+    \item \textbf{Contraste com TLS:} Esta eficiência justifica o grande \textbf{overhead temporal} medido no TLS, que exige múltiplos passos e cálculos de chave antes de iniciar a transmissão de dados.
+\end{itemize}
+
+% Imagem do Handshake TCP puro
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{./imagens/handshake_tcp.png}
+    \caption{Captura do Handshake TCP puro.}
+\end{figure}
+
+\subsubsection{Transmissão e Encerramento (Quatro Vias)}
+
+A transferência de dados de aplicação (pacotes \texttt{PSH, ACK}) é seguida por um encerramento ordenado:
+
+\begin{itemize}
+    \item \textbf{Fechamento da Conexão:} O término da sessão é realizado através de um \textbf{handshake de quatro vias}, onde o cliente e o servidor enviam, cada um, um pacote \texttt{FIN} (Finish) e recebem um \texttt{ACK} (Acknowledgement) de confirmação.
+    \item \textbf{Sequência no Wireshark:} O pacote \texttt{FIN} inicial (Pacote 48) e o \texttt{ACK} de confirmação (Pacote 49) marcam a intenção do cliente de fechar, seguido pelo \texttt{FIN} do servidor (Pacote 51) e o \texttt{ACK} final do cliente (Pacote 52).
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./imagens/fechamento_conexao_tcp.png}
+    \caption{Captura do encerramento de quatro vias (FIN/ACK).}
+    \label{tab:pacotes_tcp} % Etiqueta para referência
+\end{figure}
+
+\subsection{Análise da Exposição de Dados (Vulnerabilidade)}
+
+Em contraste com a robustez do TLS, a comunicação TCP pura falha no requisito fundamental de segurança.
+
+\begin{itemize}
+    \item \textbf{Vulnerabilidade à Leitura:} A ausência de qualquer camada criptográfica significa que o \textit{payload} do pacote TCP (a camada \texttt{Data}) contém os dados do arquivo em texto plano.
+    \item \textbf{Evidência da Exposição:} A captura de pacote mostra claramente o conteúdo do arquivo na camada de dados em formato legível, comprovando a total ausência de segurança e falha de \textbf{Confidencialidade}.
+\end{itemize}
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./imagens/texto_puro_tcp.png}
+    \caption{Captura de pacote Wireshark mostrando a transmissão de dados em texto plano (TCP puro). Note a visibilidade do conteúdo na camada de dados.}
+\end{figure}

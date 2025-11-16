@@ -4,35 +4,44 @@
 \catcode `"\active 
 \babel@aux{portuguese}{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introdução e Objetivos}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Funcionamento do TLS (Transport Layer Security)}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}O Processo de Handshake}{3}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Captura do Client Hello no Wireshark na Transmissão TLS - Parte 1.}}{4}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Captura do Client Hello no Wireshark na Transmissão - TLS Parte 2.}}{4}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Captura do Server Hello e Certificate no Wireshark na Transmissão TLS.}}{5}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Captura do Server Hello para troca de chaves na Transmissão TLS.}}{6}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Captura do Client Key Exchange na Transmissão TLS.}}{7}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Captura do Change Cipher Spec do cliente para o servidor na Transmissão TLS.}}{8}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Captura do Change Cipher Spec do servidor para o cliente na Transmissão TLS.}}{8}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Criptografia de Dados e Transferência Segura}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}Ativação da Camada TLS no Código-Fonte}{9}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Captura de parte do client.py do método connect\_tls.}}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Algoritmo e Evidência na Rede}{9}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Captura do Server Hello do campo cipher\_suite.}}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Comparação de Implementações: Segurança e Evidências}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}1. Confidencialidade (O Conteúdo dos Dados)}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Transmissão Sem TLS (TCP Puro)}{10}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Evidência de Texto Plano (TCP Puro). Conteúdo visível no payload.}}{11}{}\protected@file@percent }
-\newlabel{fig:tcp_texto_plano}{{10}{11}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Transmissão Com TLS}{11}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Evidência de Envio Cifrado (TLS). Payload ilegível (Encrypted Application Data).}}{12}{}\protected@file@percent }
-\newlabel{fig:tls_cifrado}{{11}{12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}2. Integridade e Autenticidade}{12}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Comparação de Mecanismos de Segurança}}{12}{}\protected@file@percent }
-\newlabel{tab:seguranca_mecanismos}{{1}{12}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Análise e Discussão do Overhead (Custo do TLS)}{12}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Definição das Métricas de Desempenho}{12}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Dados Quantitativos do Overhead}{13}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Comparação Quantitativa de Desempenho (Média de 10 Testes)}}{13}{}\protected@file@percent }
-\newlabel{tab:overhead_quantitativo}{{2}{13}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Análise Detalhada das Causas do Overhead}{13}{}\protected@file@percent }
-\gdef \@abspage@last{14}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Transmissão TCP Pura (Sem Criptografia)}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Estabelecimento e Ciclo de Vida da Conexão}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Handshake de Três Vias e Overhead Temporal}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Captura do Handshake TCP puro.}}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Transmissão e Encerramento (Quatro Vias)}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Captura do encerramento de quatro vias (FIN/ACK).}}{4}{}\protected@file@percent }
+\newlabel{tab:pacotes_tcp}{{2}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Análise da Exposição de Dados (Vulnerabilidade)}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Captura de pacote Wireshark mostrando a transmissão de dados em texto plano (TCP puro). Note a visibilidade do conteúdo na camada de dados.}}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Funcionamento do TLS (Transport Layer Security)}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}O Processo de Handshake}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Captura do Client Hello no Wireshark na Transmissão TLS - Parte 1.}}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Captura do Client Hello no Wireshark na Transmissão - TLS Parte 2.}}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Captura do Server Hello e Certificate no Wireshark na Transmissão TLS.}}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Captura do Server Hello para troca de chaves na Transmissão TLS.}}{8}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Captura do Client Key Exchange na Transmissão TLS.}}{9}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Captura do Change Cipher Spec do cliente para o servidor na Transmissão TLS.}}{10}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Captura do Change Cipher Spec do servidor para o cliente na Transmissão TLS.}}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Criptografia de Dados e Transferência Segura}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Ativação da Camada TLS no Código-Fonte}{11}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Captura de parte do client.py do método connect\_tls.}}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Algoritmo e Evidência na Rede}{12}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Captura do Server Hello do campo cipher\_suite.}}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Comparação de Implementações: Segurança e Evidências}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}1. Confidencialidade (O Conteúdo dos Dados)}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Transmissão Sem TLS (TCP Puro)}{13}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Evidência de Texto Plano (TCP Puro). Conteúdo visível no payload.}}{14}{}\protected@file@percent }
+\newlabel{fig:tcp_texto_plano}{{13}{14}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Transmissão Com TLS}{14}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Evidência de Envio Cifrado (TLS). Payload ilegível (Encrypted Application Data).}}{15}{}\protected@file@percent }
+\newlabel{fig:tls_cifrado}{{14}{15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}2. Integridade e Autenticidade}{15}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Comparação de Mecanismos de Segurança}}{15}{}\protected@file@percent }
+\newlabel{tab:seguranca_mecanismos}{{1}{15}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Análise e Discussão do Overhead (Custo do TLS)}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Definição das Métricas de Desempenho}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Dados Quantitativos do Overhead}{16}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Comparação Quantitativa de Desempenho (Média de 10 Testes)}}{16}{}\protected@file@percent }
+\newlabel{tab:overhead_quantitativo}{{2}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Análise Detalhada das Causas do Overhead}{16}{}\protected@file@percent }
+\gdef \@abspage@last{17}

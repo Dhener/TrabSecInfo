@@ -1,16 +1,21 @@
 \babel@toc {portuguese}{}\relax 
 \contentsline {section}{\numberline {1}Introdução e Objetivos}{3}{}%
-\contentsline {section}{\numberline {2}Funcionamento do TLS (Transport Layer Security)}{3}{}%
-\contentsline {subsection}{\numberline {2.1}O Processo de Handshake}{3}{}%
-\contentsline {subsection}{\numberline {2.2}Criptografia de Dados e Transferência Segura}{9}{}%
-\contentsline {subsubsection}{\numberline {2.2.1}Ativação da Camada TLS no Código-Fonte}{9}{}%
-\contentsline {subsubsection}{\numberline {2.2.2}Algoritmo e Evidência na Rede}{9}{}%
-\contentsline {section}{\numberline {3}Comparação de Implementações: Segurança e Evidências}{10}{}%
-\contentsline {subsection}{\numberline {3.1}1. Confidencialidade (O Conteúdo dos Dados)}{10}{}%
-\contentsline {subsubsection}{\numberline {3.1.1}Transmissão Sem TLS (TCP Puro)}{10}{}%
-\contentsline {subsubsection}{\numberline {3.1.2}Transmissão Com TLS}{11}{}%
-\contentsline {subsection}{\numberline {3.2}2. Integridade e Autenticidade}{12}{}%
-\contentsline {section}{\numberline {4}Análise e Discussão do Overhead (Custo do TLS)}{12}{}%
-\contentsline {subsection}{\numberline {4.1}Definição das Métricas de Desempenho}{12}{}%
-\contentsline {subsection}{\numberline {4.2}Dados Quantitativos do Overhead}{13}{}%
-\contentsline {subsection}{\numberline {4.3}Análise Detalhada das Causas do Overhead}{13}{}%
+\contentsline {section}{\numberline {2}Transmissão TCP Pura (Sem Criptografia)}{3}{}%
+\contentsline {subsection}{\numberline {2.1}Estabelecimento e Ciclo de Vida da Conexão}{3}{}%
+\contentsline {subsubsection}{\numberline {2.1.1}Handshake de Três Vias e Overhead Temporal}{3}{}%
+\contentsline {subsubsection}{\numberline {2.1.2}Transmissão e Encerramento (Quatro Vias)}{4}{}%
+\contentsline {subsection}{\numberline {2.2}Análise da Exposição de Dados (Vulnerabilidade)}{4}{}%
+\contentsline {section}{\numberline {3}Funcionamento do TLS (Transport Layer Security)}{5}{}%
+\contentsline {subsection}{\numberline {3.1}O Processo de Handshake}{5}{}%
+\contentsline {subsection}{\numberline {3.2}Criptografia de Dados e Transferência Segura}{11}{}%
+\contentsline {subsubsection}{\numberline {3.2.1}Ativação da Camada TLS no Código-Fonte}{11}{}%
+\contentsline {subsubsection}{\numberline {3.2.2}Algoritmo e Evidência na Rede}{12}{}%
+\contentsline {section}{\numberline {4}Comparação de Implementações: Segurança e Evidências}{13}{}%
+\contentsline {subsection}{\numberline {4.1}1. Confidencialidade (O Conteúdo dos Dados)}{13}{}%
+\contentsline {subsubsection}{\numberline {4.1.1}Transmissão Sem TLS (TCP Puro)}{13}{}%
+\contentsline {subsubsection}{\numberline {4.1.2}Transmissão Com TLS}{14}{}%
+\contentsline {subsection}{\numberline {4.2}2. Integridade e Autenticidade}{15}{}%
+\contentsline {section}{\numberline {5}Análise e Discussão do Overhead (Custo do TLS)}{15}{}%
+\contentsline {subsection}{\numberline {5.1}Definição das Métricas de Desempenho}{15}{}%
+\contentsline {subsection}{\numberline {5.2}Dados Quantitativos do Overhead}{16}{}%
+\contentsline {subsection}{\numberline {5.3}Análise Detalhada das Causas do Overhead}{16}{}%

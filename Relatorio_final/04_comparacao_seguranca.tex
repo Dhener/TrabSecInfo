@@ -1,0 +1,56 @@
+\section{Comparação de Implementações: Segurança e Evidências}
+
+A comparação entre as implementações sem e com TLS é fundamental para demonstrar o valor da criptografia em redes. Esta seção contrasta os protocolos com base nas garantias de segurança e utiliza as capturas de pacotes de rede (Wireshark) como evidência empírica.
+
+\subsection{1. Confidencialidade (O Conteúdo dos Dados)}
+
+\subsubsection{Transmissão Sem TLS (TCP Puro)}
+Na implementação sem TLS (porta 5001), o protocolo TCP puro não adiciona nenhuma camada de segurança, e a transmissão ocorre em \textbf{texto plano}.
+\begin{itemize}
+    \item \textbf{Análise:} A captura de pacotes (Figura \ref{fig:tcp_texto_plano}) mostra o conteúdo literal do arquivo de teste ("Este é um arquivo de teste...") visível no \textit{payload} do segmento TCP.
+    \item \textbf{Conclusão:} A confidencialidade é \textbf{nula}. Qualquer \textit{sniffing} na rede expõe os dados.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./imagens/Screenshot 2025-11-08 at 15.42.45.png} % Imagem da Captura TCP Puro
+    \caption{Evidência de Texto Plano (TCP Puro). Conteúdo visível no payload.}
+    \label{fig:tcp_texto_plano}
+\end{figure}
+
+\subsubsection{Transmissão Com TLS}
+Na implementação com TLS (porta 5002), a chave de sessão secreta (negociada no \textit{handshake}) é usada para criptografar o arquivo antes do envio.
+\begin{itemize}
+    \item \textbf{Análise:} A captura (Figura \ref{fig:tls_cifrado}) mostra que o tráfego de dados é categorizado como \texttt{TLSv1.2 Record Layer: Application Data}. O \textit{payload} contém apenas sequências ilegíveis de bytes cifrados.
+    \item \textbf{Conclusão:} A confidencialidade é \textbf{garantida}, pois os dados estão protegidos contra interceptação.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./imagens/texto_cifrado.png} % Imagem da Captura TLS Cifrado
+    \caption{Evidência de Envio Cifrado (TLS). Payload ilegível (Encrypted Application Data).}
+    \label{fig:tls_cifrado}
+\end{figure}
+
+\subsection{2. Integridade e Autenticidade}
+
+\begin{table}[H]
+    \centering
+    \resizebox{1.0\textwidth}{!}{
+    \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Garantia de Segurança} & \textbf{TCP Puro (Sem TLS)} & \textbf{TLS} \\
+    \hline
+    \textbf{Autenticidade (Identidade)} & Nenhuma & \textbf{Garantida} (via Certificado Digital) \\
+    \hline
+    \textbf{Integridade (Anti-adulteração)} & Nenhuma & \textbf{Garantida} (via MAC/Hash) \\
+    \hline
+    \end{tabular}}
+    \caption{Comparação de Mecanismos de Segurança}
+    \label{tab:seguranca_mecanismos}
+\end{table}
+
+\begin{itemize}
+    \item \textbf{Autenticidade:} Na implementação TCP, não há verificação de identidade; o cliente aceita a conexão de qualquer servidor na porta 5001. No TLS, o servidor envia seu certificado digital para provar sua identidade durante o \textit{handshake}, impedindo ataques \textit{Man-in-the-Middle}.
+    \item \textbf{Integridade:} O TCP usa apenas um \textit{checksum} básico. O TLS, por outro lado, anexa um \textbf{Message Authentication Code (MAC)} criptográfico a cada registro de dados, garantindo que o pacote não foi alterado intencionalmente no caminho.
+\end{itemize}

@@ -1,0 +1,52 @@
+\section{Análise e Discussão do Overhead (Custo do TLS)}
+
+O uso do TLS, embora indispensável para garantir confidencialidade e integridade, introduz um custo de desempenho conhecido como \textit{overhead}. Este custo é a consequência direta do trabalho criptográfico exigido pelo protocolo. Esta seção analisa o impacto quantitativo do TLS comparado ao TCP puro, utilizando os dados coletados através do \texttt{performance\_analyzer.py}.
+
+\subsection{Definição das Métricas de Desempenho}
+
+Para quantificar o impacto, foram coletadas as seguintes métricas, que contrastam o desempenho da transferência em texto plano (TCP) e cifrada (TLS):
+
+\begin{itemize}
+    \item \textbf{Tempo Médio:} O tempo total gasto, em segundos, desde o estabelecimento da conexão até a conclusão da transferência do arquivo. No TLS, esta métrica inclui o tempo do \textit{handshake} e o tempo de criptografia/descriptografia dos dados.
+    \item \textbf{Throughput Médio (Vazão):} A taxa de transferência efetiva de dados, medida em megabytes por segundo (MB/s). É calculada dividindo o tamanho do arquivo pelo tempo de transferência. O \textit{throughput} é inversamente proporcional ao \textit{overhead} de tempo.
+    \item \textbf{Fator de Desaceleração:} Um multiplicador que indica quantas vezes o processo com TLS é mais lento que o processo sem criptografia (TCP Puro). Um fator de 2.22x, por exemplo, significa que o TLS leva 2.22 vezes mais tempo.
+    \item \textbf{Impacto / Overhead:} A variação percentual que o TLS introduziu na métrica. Um \textit{overhead} de tempo de \textbf{+121.95\%} significa que o tempo de transferência aumentou 121.95\%. Uma redução de \textit{throughput} de \textbf{-69.04\%} indica que a vazão caiu quase 70\%.
+\end{itemize}
+
+\subsection{Dados Quantitativos do Overhead}
+
+As métricas foram coletadas através de 10 testes para cada protocolo, utilizando o script \texttt{performance\_analyzer.py}. Os resultados médios (Tabela \ref{tab:overhead_quantitativo}) demonstram a diferença de eficiência.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparação Quantitativa de Desempenho (Média de 10 Testes)}
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Métrica} & \textbf{TCP Puro} & \textbf{TLS} & \textbf{Impacto / Overhead} \\
+    \hline
+    Tempo Médio & 0.000129s & 0.000286s & \textbf{+121.95\%} \\
+    \hline
+    Throughput Médio & 520.84 MB/s & 161.28 MB/s & \textbf{-69.04\%} \\
+    \hline
+    Fator de Desaceleração & 1.00x & 2.22x & TLS é 2.22x mais lento \\
+    \hline
+    \end{tabular}
+    \label{tab:overhead_quantitativo}
+\end{table}
+
+\subsection{Análise Detalhada das Causas do Overhead}
+
+O \textit{overhead} de tempo de \textbf{121.95\%} e a consequente \textbf{redução de 69.04\% no \textit{throughput}} são atribuídos a fatores que consomem ciclos da CPU e introduzem latência de rede.
+
+\begin{enumerate}
+    \item \textbf{Latência do Handshake Inicial:}
+    O processo de negociação de cifras, troca de chaves (ECDHE) e autenticação de certificado (RSA) é executado antes que o primeiro \textit{byte} de dado do arquivo seja transmitido. Este \textit{handshake} exige múltiplas trocas de mensagens (*Round-Trip Times*), consumindo o tempo inicial e impactando diretamente o \textbf{Tempo Médio} total, especialmente em transferências de arquivos pequenos.
+    
+    \item \textbf{Criptografia e Descriptografia Contínua (Overhead de CPU):}
+    O custo mais significativo no \textit{throughput} é introduzido pela execução dos algoritmos criptográficos (ChaCha20-Poly1305 no seu caso). Cada bloco de dados enviado exige que o cliente o cifre e que o servidor o decifre, consumindo ciclos da CPU em tempo real durante toda a transferência. Esse gasto computacional prolonga o \textbf{Tempo Médio} de forma linear ao tamanho do arquivo.
+    
+    \item \textbf{Processamento de Integridade e Overhead de Tamanho:}
+    O TLS não apenas cifra, mas também garante a integridade e a autenticidade. O cálculo e a inclusão do \textit{Authentication Tag} (Poly1305), juntamente com o cabeçalho do protocolo de registro TLS, adicionam um \textit{overhead} de tamanho a cada pacote. Os dados do teste indicam um \textbf{\textit{overhead} médio de 28 bytes} por pacote. Embora o impacto do tamanho seja menor que o impacto temporal, ele contribui para o \textit{throughput} reduzido.
+\end{enumerate}
+
+Em conclusão, a análise demonstra que o **TLS é 2.22x mais lento** (Fator de Desaceleração) que o TCP Puro. No entanto, este custo é amplamente compensado pela garantia de \textbf{confidencialidade, integridade e autenticidade} que o TLS oferece, sendo um requisito indispensável para a transmissão segura de informações em qualquer ambiente de rede profissional.
